@@ -1,0 +1,41 @@
+#!/usr/bin/env bash -euE
+
+set -euE
+set -o pipefail
+
+trap 'echo ERROR 1>&2' ERR
+
+IFS=$'\n\t'
+
+cd "$(dirname "$0")"
+
+rm -rf dest/*
+
+cp src/*.css dest/
+
+genSidebar() {
+  echo '<ul>'
+
+  for f in $(ls src/ | grep '\.md$') ; do
+    title="$(cat "src/$f" | head -n 1 | sed 's;^# *;;g')"
+    href="$(printf '%s' "/$f" | sed 's;\.md$;.html;g')"
+    echo "<li><a href=\"$href\">$title<a></li>"
+  done
+
+  echo '</ul>'
+}
+
+sidebar="$(genSidebar | tr -d '\n')"
+
+for f in $(ls src/ | grep '\.md$') ; do
+    out="$(printf '%s' "$f" | sed 's;\.md$;.html;g')"
+    echo "$f -> $out"
+
+    article="$(pandoc "src/$f" -o '-' | tr -d '\n')"
+
+    cat template.html |
+        sed "s@<!-- ARTICLE -->@$article@g" |
+        sed "s@<!-- SIDEBAR -->@$sidebar@g" \
+        > "dest/$out"
+done
+

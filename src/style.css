@@ -1,0 +1,29 @@
+h1 {
+    font-size: 3em;
+}
+
+h2 {
+    font-size: 2.5em;
+}
+
+h3 {
+    font-size: 2.0em;
+}
+
+nav#sidebar {
+    position: fixed;
+    top: 0;
+    width: 200px;
+    height: 100vh;
+    border-right: solid 1px black;
+}
+
+div#article-wrapper {
+    margin-left: 200px;
+}
+
+div#article {
+    margin: auto;
+    max-width: 40em;
+}
+
